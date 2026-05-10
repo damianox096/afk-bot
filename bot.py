@@ -8,10 +8,9 @@ from datetime import datetime
 TOKEN = os.getenv("TOKEN")
 AFK_CHANNEL_ID = 1502722226112430304
 
-intents = discord.Intents.all()
+intents = discord.Intents.default()
 intents.voice_states = True
-intents.members = True
-intents.message_content = True
+
 
 client = discord.Client(intents=intents)
 
