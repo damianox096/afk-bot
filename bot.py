@@ -33,7 +33,13 @@ last_activity = {}
 
 @client.event
 async def on_ready():
-    print(f"Zalogowano jako {client.user}")
+
+    print(f"BOT ONLINE: {client.user}")
+
+    await client.change_presence(
+        activity=discord.Game("AFK System")
+    )
+
     check_afk.start()
 
 @client.event
