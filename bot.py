@@ -1,3 +1,4 @@
+```python
 import discord
 from discord.ext import tasks
 from datetime import datetime
@@ -6,23 +7,22 @@ from threading import Thread
 import os
 
 TOKEN = os.getenv("TOKEN")
-AFK_CHANNEL_ID = "1502965893934878720"
+AFK_CHANNEL_ID = 1502965893934878720
 
-# Flask hack dla Render
+# Flask dla Render
 app = Flask('')
-
 
 @app.route('/')
 def home():
     return "AFK Bot działa"
-    
+
 def run_web():
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
 
 Thread(target=run_web).start()
 
-# Discord
+# Discord intents
 intents = discord.Intents.default()
 intents.voice_states = True
 intents.members = True
@@ -33,68 +33,66 @@ last_activity = {}
 
 @client.event
 async def on_ready():
-
-    print(f"BOT ONLINE: {client.user}")
-
-    await client.change_presence(
-        status=discord.Status.online,
-        activity=discord.Game("AFK System")
-    )
-
+    print(f"ONLINE: {client.user}")
     check_afk.start()
 
 @client.event
 async def on_voice_state_update(member, before, after):
+
+    print(f"VOICE EVENT: {member}")
 
     if member.bot:
         return
 
     if after.channel:
         last_activity[member.id] = datetime.now()
+        print(f"{member} wszedl na kanal")
 
-@tasks.loop(seconds=30)
+@tasks.loop(seconds=10)
 async def check_afk():
+
+    print("SPRAWDZAM AFK")
 
     for guild in client.guilds:
 
         afk_channel = guild.get_channel(AFK_CHANNEL_ID)
 
         if not afk_channel:
+            print("Nie znaleziono AFK channel")
             continue
 
         for vc in guild.voice_channels:
+
+            print(f"Kanal: {vc.name}")
 
             if vc.id == AFK_CHANNEL_ID:
                 continue
 
             for member in vc.members:
 
+                print(f"Sprawdzam: {member}")
+
                 if member.bot:
                     continue
 
-                last = last_activity.get(member.id, datetime.now())
+                last = last_activity.get(member.id)
+
+                if not last:
+                    continue
+
                 inactive = (datetime.now() - last).total_seconds()
 
-                # 5 minut
+                print(f"{member} inactive: {inactive}")
+
                 if inactive >= 30:
+
+                    print(f"PRZENOSZE {member}")
 
                     try:
                         await member.move_to(afk_channel)
                         await member.edit(mute=True)
 
-                        print(f"{member} -> AFK")
-
                     except Exception as e:
                         print(e)
 
-@client.event
-async def on_ready():
-    print("VOICE CHANNELS:")
-
-    for guild in client.guilds:
-        for vc in guild.voice_channels:
-            print(vc.name)
-
 client.run(TOKEN)
-
-
