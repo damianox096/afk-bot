@@ -11,6 +11,10 @@ AFK_CHANNEL_ID = "1502722226112430304"
 # Flask hack dla Render
 app = Flask('')
 
+@app.route('/')
+def home():
+    return "AFK Bot działa"
+    
 def run_web():
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
