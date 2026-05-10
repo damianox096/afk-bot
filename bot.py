@@ -6,7 +6,7 @@ from threading import Thread
 import os
 
 TOKEN = os.getenv("TOKEN")
-AFK_CHANNEL_ID = "1502722226112430304"
+AFK_CHANNEL_ID = "1502965893934878720"
 
 # Flask hack dla Render
 app = Flask('')
