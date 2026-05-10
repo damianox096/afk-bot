@@ -68,7 +68,7 @@ async def check_afk():
                 inactive = (datetime.now() - last).total_seconds()
 
                 # 5 minut
-                if inactive >= 300:
+                if inactive >= 30:
 
                     try:
                         await member.move_to(afk_channel)
@@ -79,8 +79,14 @@ async def check_afk():
                     except Exception as e:
                         print(e)
 
-client.run(TOKEN)
-
 @client.event
 async def on_ready():
-    print(f"BOT ONLINE: {client.user}")
+    print("VOICE CHANNELS:")
+
+    for guild in client.guilds:
+        for vc in guild.voice_channels:
+            print(vc.name)
+
+client.run(TOKEN)
+
+
