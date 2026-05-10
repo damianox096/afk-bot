@@ -80,3 +80,7 @@ async def check_afk():
                         print(e)
 
 client.run(TOKEN)
+
+@client.event
+async def on_ready():
+    print(f"BOT ONLINE: {client.user}")
