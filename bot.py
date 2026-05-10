@@ -3,7 +3,8 @@ import asyncio
 import os
 from discord.ext import tasks
 from datetime import datetime
-
+from flask import Flask
+from threading import Thread
 
 TOKEN = os.getenv("TOKEN")
 AFK_CHANNEL_ID = 1502722226112430304
@@ -127,3 +128,15 @@ async def on_message(message):
     print("MSG:", message.content)
 
 client.run(TOKEN)
+
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "AFK Bot działa"
+
+def run_web():
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
+
+Thread(target=run_web).start()
